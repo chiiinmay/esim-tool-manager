@@ -1,0 +1,161 @@
+# tools.yaml — eSim Tool Manager registry
+#
+# Schema per entry:
+#   name            : str   canonical identifier (used in CLI args)
+#   display_name    : str   human-readable label
+#   kind            : system | pip
+#   executable      : str   binary executable name checked via which ("" for pip packages without CLI)
+#   version_cmd     : str   shell command that prints the version
+#   version_regex   : str   Python regex with ONE capture group → version string
+#   min_version     : str   minimum acceptable version (PEP 440 / semver)
+#   latest_stable   : str   update target ("" = "latest available")
+#   depends_on      : list  names of other entries this tool requires
+#   pkg_name_apt    : str   apt/apt-get package name  ("" = not in apt)
+#   pkg_name_winget : str   winget package ID         ("" = not in winget)
+#   pip_package     : str   PyPI package name         ("" = not a pip package)
+#   install_notes   : str   shown to user after install ("" = none)
+#
+# VERIFY comments mark package names that should be confirmed against
+# the target distro before a real deployment.
+
+tools:
+
+  - name: ngspice
+    display_name: "Ngspice Circuit Simulator"
+    kind: system
+    executable: ngspice
+    version_cmd: "ngspice --version"
+    version_regex: 'ngspice-(\d+)'
+    min_version: "37"
+    latest_stable: ""
+    depends_on: []
+    pkg_name_apt: ngspice
+    pkg_name_winget: "ngspice.ngspice"   # VERIFY
+    pip_package: ""
+    install_notes: "Restart eSim after installing ngspice."
+
+  - name: kicad
+    display_name: "KiCad EDA Suite"
+    kind: system
+    executable: kicad
+    version_cmd: "kicad --version"
+    version_regex: '(\d+\.\d+\.\d+)'
+    min_version: "7.0.0"
+    latest_stable: ""
+    depends_on: []
+    pkg_name_apt: kicad                  # VERIFY: may need PPA on older Ubuntu
+    pkg_name_winget: "KiCad.KiCad"       # VERIFY
+    pip_package: ""
+    install_notes: "KiCad may require a PPA (ppa:kicad/kicad-7.0-releases) on Ubuntu < 23.04."
+
+  - name: ghdl
+    display_name: "GHDL VHDL Simulator"
+    kind: system
+    executable: ghdl
+    version_cmd: "ghdl --version"
+    version_regex: 'GHDL (\d+\.\d+\.\d+)'
+    min_version: "3.0.0"
+    latest_stable: ""
+    depends_on: []
+    pkg_name_apt: ghdl
+    pkg_name_winget: "ghdl.ghdl"         # VERIFY
+    pip_package: ""
+    install_notes: ""
+
+  - name: verilator
+    display_name: "Verilator Verilog Simulator"
+    kind: system
+    executable: verilator
+    version_cmd: "verilator --version"
+    version_regex: 'Verilator (\d+\.\d+)'
+    min_version: "5.0"
+    latest_stable: ""
+    depends_on: []
+    pkg_name_apt: verilator
+    pkg_name_winget: "verilator.verilator" # VERIFY
+    pip_package: ""
+    install_notes: ""
+
+  - name: python3
+    display_name: "Python 3 Interpreter"
+    kind: system
+    executable: python3
+    version_cmd: "python3 --version"
+    version_regex: 'Python (\d+\.\d+\.\d+)'
+    min_version: "3.10.0"
+    latest_stable: ""
+    depends_on: []
+    pkg_name_apt: python3
+    pkg_name_winget: "Python.Python.3.10" # VERIFY: pin major.minor
+    pip_package: ""
+    install_notes: ""
+
+  - name: PyQt5
+    display_name: "PyQt5 (Qt5 bindings for Python)"
+    kind: pip
+    executable: ""
+    version_cmd: "python3 -c \"import PyQt5; print(PyQt5.QtCore.PYQT_VERSION_STR)\""
+    version_regex: '(\d+\.\d+\.\d+)'
+    min_version: "5.15.0"
+    latest_stable: ""
+    depends_on: [python3]
+    pkg_name_apt: python3-pyqt5
+    pkg_name_winget: ""
+    pip_package: PyQt5
+    install_notes: ""
+
+  - name: matplotlib
+    display_name: "Matplotlib Plotting Library"
+    kind: pip
+    executable: ""
+    version_cmd: "python3 -c \"import matplotlib; print(matplotlib.__version__)\""
+    version_regex: '(\d+\.\d+\.\d+)'
+    min_version: "3.5.0"
+    latest_stable: ""
+    depends_on: [python3, numpy]
+    pkg_name_apt: python3-matplotlib
+    pkg_name_winget: ""
+    pip_package: matplotlib
+    install_notes: ""
+
+  - name: numpy
+    display_name: "NumPy Numerical Computing"
+    kind: pip
+    executable: ""
+    version_cmd: "python3 -c \"import numpy; print(numpy.__version__)\""
+    version_regex: '(\d+\.\d+\.\d+)'
+    min_version: "1.23.0"
+    latest_stable: ""
+    depends_on: [python3]
+    pkg_name_apt: python3-numpy
+    pkg_name_winget: ""
+    pip_package: numpy
+    install_notes: ""
+
+  - name: scipy
+    display_name: "SciPy Scientific Computing"
+    kind: pip
+    executable: ""
+    version_cmd: "python3 -c \"import scipy; print(scipy.__version__)\""
+    version_regex: '(\d+\.\d+\.\d+)'
+    min_version: "1.9.0"
+    latest_stable: ""
+    depends_on: [python3, numpy]
+    pkg_name_apt: python3-scipy
+    pkg_name_winget: ""
+    pip_package: scipy
+    install_notes: ""
+
+  - name: hdlparse
+    display_name: "HDLparse VHDL/Verilog Parser"
+    kind: pip
+    executable: ""
+    version_cmd: "python3 -c \"import hdlparse; print(hdlparse.__version__)\""
+    version_regex: '(\d+\.\d+(?:\.\d+)?)'
+    min_version: "0.1"
+    latest_stable: ""
+    depends_on: [python3]
+    pkg_name_apt: ""                     # VERIFY: not in standard apt repos
+    pkg_name_winget: ""
+    pip_package: hdlparse
+    install_notes: "hdlparse is pip-only; not available in standard apt repositories."
